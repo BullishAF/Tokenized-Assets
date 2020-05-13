@@ -1,0 +1,17 @@
+pragma solidity ^0.6.0;
+
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract MyToken is ERC20, AccessControl {
+    // Create a new role identifier for the minter role
+    bytes32 public constant MINTER_ROLE = keccak256("_Admin");
+
+    constructor(address minter) public ERC20("tokenizedETH", "tETH") {
+        // Grant the minter role to a specified account
+        _setupRole(_Admin, minter);
+        
+     function _mint(address to, uint256 amount) public {
+        // Check that the calling account has the minter role
+        require(hasRole(_Admin, msg.sender), "Caller is not a minter");
+        _mint(to, amount);
